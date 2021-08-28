@@ -12,13 +12,12 @@ const fs = require('fs');
 const Person = require('../models/person');
 
 
-router.post('/sigin', async (req, res) => {
+router.post('/signup', async (req, res) => {
 
         const person = req.body;
 
         const existent = await getUser(person);
 
-        console.log('existent',existent);
         if (!existent) {
            let newPerson = createUser(person);
            res.json({ error: false, data: { user: newPerson, token: sign(newPerson._id) } });

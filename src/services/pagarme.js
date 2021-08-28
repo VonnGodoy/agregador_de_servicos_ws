@@ -24,7 +24,7 @@ module.exports = async (endpoint, data) => {
     birthday: person.dataNascimento,
   });
 
-  if (pagarmePerson.error) {
+  /*if (pagarmePerson.error) {
     throw pagarmePerson;
   }
   customerId: pagarmePerson.data.id
@@ -41,7 +41,7 @@ module.exports = async (endpoint, data) => {
       error: true,
       message: JSON.stringify(err.response.data.errors[0]),
     };
-  }
+  }*/
 
   const pagarmeBankAccount = await pagarme('/bank_accounts', {
     bank_code: contaBancaria.banco,
@@ -52,9 +52,9 @@ module.exports = async (endpoint, data) => {
     legal_name: contaBancaria.titular,
   });
 
-  if (pagarmeBankAccount.error) {
+  /*if (pagarmeBankAccount.error) {
     throw pagarmeBankAccount;
-  }
+  }*/
 
       // CRIANDO PAGAMENTO MESTRE
       const createPayment = await pagarme('/transactions', {
@@ -104,7 +104,7 @@ module.exports = async (endpoint, data) => {
         ],
       });
   
-      if (createPayment.error) {
+    /*  if (createPayment.error) {
         throw { message: createPayment.message };
       }
   
@@ -116,7 +116,7 @@ module.exports = async (endpoint, data) => {
         transactionId: createPayment.data.id,
         comissao: service.comissao,
         valor: service.preco,
-      };
+      };*/
 
       const pargarmeReceiver = await pagarme('/recipients', {
         bank_account_id: pagarmeBankAccount.data.id,
@@ -124,7 +124,58 @@ module.exports = async (endpoint, data) => {
         transfer_enabled: true,
       });
 
-      if (pagarmeBankAccount.error) {
+      /*if (pagarmeBankAccount.error) {
         throw pargarmeReceiver;
-      }
+      }*/
+
+      const createPayment2 = await pagarme('/transactions', {
+        amount: precoFinal,
+        card_number: '4111111111111111',
+        card_cvv: '123',
+        card_expiration_date: '0922',
+        card_holder_name: 'Morpheus Fishburne',
+        customer: {
+          id: person.customerId,
+        },
+        billing: {
+          // SUBISTITUIR COM OS DADOS DO CLIENTE
+          name: person.nome,
+          address: {
+            country: person.endereco.pais.toLowerCase(),
+            state: person.endereco.uf.toLowerCase(),
+            city: person.endereco.cidade,
+            street: person.endereco.logradouro,
+            street_number: person.endereco.numero,
+            zipcode: person.endereco.cep,
+          },
+        },
+        items: [
+          {
+            id: serviceId,
+            title: service.titulo,
+            unit_price: precoFinal,
+            quantity: 1,
+            tangible: false,
+          },
+        ],
+        split_rules: [
+          // TAXA DO SALÃO
+          {
+            recipient_id: provider.recipientId,
+            amount: precoFinal - keys.app_fee - collaboratoreSplitRule.amount,
+          },
+          // TAXAS DOS ESPECIALISTAS / COLABORADORES
+          collaboratoreSplitRule,
+          // TAXA DO APP
+          {
+            recipient_id: keys.recipient_id,
+            amount: keys.app_fee,
+            charge_processing_fee: false,
+          },
+        ],
+      });
+  
+      /*if (createPayment.error) {
+        throw { message: createPayment.message };
+      }*/
 };

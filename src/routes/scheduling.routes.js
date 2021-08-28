@@ -68,64 +68,12 @@ router.post('/', async (req, res) => {
       amount: parseInt(precoFinal * (service.comissao / 100)),
     };
 
-    // CRIANDO PAGAMENTO MESTRE
-    const createPayment = await pagarme('/transactions', {
-      amount: precoFinal,
-      card_number: '4111111111111111',
-      card_cvv: '123',
-      card_expiration_date: '0922',
-      card_holder_name: 'Morpheus Fishburne',
-      customer: {
-        id: person.customerId,
-      },
-      billing: {
-        // SUBISTITUIR COM OS DADOS DO CLIENTE
-        name: person.nome,
-        address: {
-          country: person.endereco.pais.toLowerCase(),
-          state: person.endereco.uf.toLowerCase(),
-          city: person.endereco.cidade,
-          street: person.endereco.logradouro,
-          street_number: person.endereco.numero,
-          zipcode: person.endereco.cep,
-        },
-      },
-      items: [
-        {
-          id: serviceId,
-          title: service.titulo,
-          unit_price: precoFinal,
-          quantity: 1,
-          tangible: false,
-        },
-      ],
-      split_rules: [
-        // TAXA DO SALÃO
-        {
-          recipient_id: provider.recipientId,
-          amount: precoFinal - keys.app_fee - collaboratoreSplitRule.amount,
-        },
-        // TAXAS DOS ESPECIALISTAS / COLABORADORES
-        collaboratoreSplitRule,
-        // TAXA DO APP
-        {
-          recipient_id: keys.recipient_id,
-          amount: keys.app_fee,
-          charge_processing_fee: false,
-        },
-      ],
-    });
-
-    if (createPayment.error) {
-      throw { message: createPayment.message };
-    }
-
     // CRIAR O AGENDAMENTOS E AS TRANSAÇÕES
     // TRANSFORMAR EM INSERT MANY
     let scheduling = req.body;
     scheduling = {
       ...scheduling,
-      transactionId: createPayment.data.id,
+     // transactionId: createPayment.data.id,
       comissao: service.comissao,
       valor: service.preco,
     };
@@ -133,7 +81,7 @@ router.post('/', async (req, res) => {
 
     await session.commitTransaction();
     session.endSession();
-    res.json({ error: false, scheduling: createPayment.data });
+   // res.json({ error: false, scheduling: createPayment.data });
   } catch (err) {
     await session.abortTransaction();
     session.endSession();

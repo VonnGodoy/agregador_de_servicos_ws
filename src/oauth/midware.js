@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
 function verifyjwt(req,res,next){
-    var token = req.headers['x-access-jwt-token'];
+    var token = req.headers['X-Access-Jwt-Token'];
     if (!token)
         return res.status(401).send({ error: true, message: 'Usuario Não Autenticado.' });
 
@@ -11,7 +11,7 @@ function verifyjwt(req,res,next){
         if (err)
             return res.status(403).send({ error: true, message: 'Token Inválido Faça Login Novamente.' });
 
-        req.personId = decoded.id;
+        req.params.personId = decoded.id;
 
         next();
     });

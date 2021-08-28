@@ -15,7 +15,7 @@ const service = new Schema({
     required: true,
   },
   timeExecution: {
-    type: String,
+    type: Date,
     required: false,
   },
   description: {

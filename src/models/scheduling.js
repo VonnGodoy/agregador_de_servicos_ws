@@ -22,7 +22,11 @@ const scheduling = new Schema({
     ref: 'Collaborator',
     required: false,
   },
-  date: {
+  startDate: {
+    type: Date,
+    required: true,
+  },
+  endDate: {
     type: Date,
     required: true,
   },
