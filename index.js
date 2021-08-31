@@ -15,7 +15,7 @@ app.use(busboyBodyParser());
 const cors = require('cors');
 app.use(cors());
 
-app.set('port', 8000);
+app.set('port', process.env.PORT || 8000);
 
 // DATABASE
 require('./database');
