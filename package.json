@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node src/index.js",
     "test": "export NODE_ENV=prod && nodemon index.js",
-    "dev": "export NODE_ENV=dev && nodemon index.js",
+    "dev": "nodemon index.js",
     "prod": "export NODE_ENV=prod && pm2 start index.js && pm2 start mail.js",
     "mail": "export NODE_ENV=prod && node ./src/scripts/bulkMails.js"
   },
