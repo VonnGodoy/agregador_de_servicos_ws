@@ -28,7 +28,7 @@ router.post('/signup', async (req, res) => {
 })
 
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', async (req, res) => {
 
     const person = req.body;
 
@@ -47,6 +47,25 @@ router.post('/logout', function (req, res) {
     res.status(200).send({ auth: false, token: null });
 });
 
+router.post('/refresh', async (req, res) => {
+
+    const user = null;
+    var token = req.headers['X-Access-Jwt-Token'];
+    if (!token)
+        return res.status(401).send({ error: true, message: 'Usuario Não Autenticado.' });
+
+    var publicKey = fs.readFileSync('src/oauth/public.key', 'utf8');
+    jwt.verify(token, publicKey, { algorithm: ["RS256"] }, function (err, decoded) {
+        getUserRefresh(decoded.id);
+    });
+
+    if (!user) {
+        res.json({ error: true, message: 'Usuario Não Autenticado.' });
+    } else {
+        res.json({ error: false, data: { user: user, token: sign(user._id) } });
+    }
+})
+
 
 function sign(_id) {
 
@@ -56,6 +75,11 @@ function sign(_id) {
         algorithm: "RS256"
     });
 
+}
+
+async function getUserRefresh(personId) {
+    return await Person.findById(personId)
+    .select('_id name geoLocation state');
 }
 
 async function getUser(person) {
