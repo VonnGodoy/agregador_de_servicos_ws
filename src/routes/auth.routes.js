@@ -57,7 +57,7 @@ router.post('/refresh', async (req, res) => {
         return res.status(401).send({ error: true, message: 'Usuario Não Autenticado.' });
 
     var publicKey = fs.readFileSync('src/oauth/public.key', 'utf8');
-    jwt.decode(token, { algorithm: ["RS256"] }, function (err, decoded) {
+    jwt.decode(token, { algorithm: ["RS256"] },async function (err, decoded) {
         if(decoded._id !== undefined){
                 console.log('decode', decoded);
            user = await getUserRefresh(decoded._id);
