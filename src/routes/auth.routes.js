@@ -49,7 +49,7 @@ router.post('/logout', function (req, res) {
 
 router.post('/refresh', async (req, res) => {
 
-    const user = null;
+    var user = null;
    
     const token = req.headers['x_access_jwt_token'];
 
@@ -57,10 +57,15 @@ router.post('/refresh', async (req, res) => {
         return res.status(401).send({ error: true, message: 'Usuario Não Autenticado.' });
 
     var publicKey = fs.readFileSync('src/oauth/public.key', 'utf8');
-    jwt.verify(token, publicKey, { algorithm: ["RS256"] }, function (err, decoded) {
+    jwt.decode(token, { algorithm: ["RS256"] }, function (err, decoded) {
         if(decoded._id !== undefined){
+                console.log('decode', decoded);
            user = getUserRefresh(decoded._id);
         }
+            if(err){
+                    console.log('erro',err);
+            }
+                    
     });
 
     if (!user) {
