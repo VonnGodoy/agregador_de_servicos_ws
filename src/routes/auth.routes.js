@@ -60,7 +60,7 @@ router.post('/refresh', async (req, res) => {
     jwt.decode(token, { algorithm: ["RS256"] }, function (err, decoded) {
         if(decoded._id !== undefined){
                 console.log('decode', decoded);
-           user = getUserRefresh(decoded._id);
+           user = await getUserRefresh(decoded._id);
         }
             if(err){
                     console.log('erro',err);
