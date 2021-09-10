@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
 function verifyjwt(req,res,next){
-    var token = req.headers['X-Access-Jwt-Token'];
+    var token = req.headers['x-access-jwt-token'];
     if (!token)
         return res.status(401).send({ error: true, message: 'Usuario Não Autenticado.' });
 
