@@ -49,7 +49,7 @@ router.post('/logout', function (req, res) {
 
 router.post('/refresh', async (req, res) => {
 
-    var user = null;
+    const user = null;
 
     const token = req.headers['x_access_jwt_token'];
 
@@ -59,9 +59,8 @@ router.post('/refresh', async (req, res) => {
 
     var publicKey = fs.readFileSync('src/oauth/public.key', 'utf8');
     jwt.verify(token, publicKey, { algorithm: ["RS256"] },async function (err, decoded) {
-        console.log('decoded', decoded);
-            console.log('err', err);
-        if(decoded._id !== undefined){       
+
+        if(!err){       
            user = await getUserRefresh(decoded._id);
         }
                     
