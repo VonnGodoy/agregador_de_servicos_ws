@@ -54,8 +54,9 @@ router.post('/refresh', async (req, res) => {
     const token = req.headers['x_access_jwt_token'];
         console.log('token',token);
 
-    if (!token)
+    if (!token){
         return res.status(401).send({ error: true, message: 'Usuario Não Autenticado.' });
+    }
 
     var publicKey = fs.readFileSync('src/oauth/public.key', 'utf8');
     jwt.decode(token, { algorithm: ["RS256"] },async function (err, decoded) {
