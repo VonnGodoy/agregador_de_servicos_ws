@@ -50,8 +50,9 @@ router.post('/logout', function (req, res) {
 router.post('/refresh', async (req, res) => {
 
     var user = null;
-   
+    console.log('request',req);
     const token = req.headers['x_access_jwt_token'];
+        console.log('token',token);
 
     if (!token)
         return res.status(401).send({ error: true, message: 'Usuario Não Autenticado.' });
