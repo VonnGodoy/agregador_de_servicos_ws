@@ -58,10 +58,10 @@ router.post('/refresh', async (req, res) => {
     }
 
     var publicKey = fs.readFileSync('src/oauth/public.key', 'utf8');
-    jwt.decode(token, { algorithm: ["RS256"] },async function (err, decoded) {
-         console.log('decode', decoded);
-            if(decoded._id !== undefined){
-               
+    jwt.verify(token, { algorithm: ["RS256"] },async function (err, decoded) {
+         console.log('error', err);
+            console.log('decode', decoded);
+        if(decoded._id !== undefined){       
            user = await getUserRefresh(decoded._id);
         }
                     
