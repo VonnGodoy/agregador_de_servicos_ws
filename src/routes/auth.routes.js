@@ -20,7 +20,7 @@ router.post('/signup', async (req, res) => {
 
         if (!existent) {
            let newPerson = createUser(person);
-           res.json({ error: false, data: { user: newPerson, token: sign(newPerson._id) } });
+           res.json({ error: false, user: newPerson, token: sign(newPerson._id) });
         } else {
             res.json({ error: true, message: 'Usuario já cadastrado!' }); 
         }
@@ -37,7 +37,7 @@ router.post('/login', async (req, res) => {
     if (!user) {
         res.json({ error: false, message: 'Usuário ou Senha Incorreto' });
     } else {
-        res.json({ error: false, data: { user: user, token: sign(user._id) } });
+        res.json({ error: false, user: user, token: sign(user._id) });
     }
 })
 
@@ -49,22 +49,27 @@ router.post('/logout', function (req, res) {
 
 router.post('/refresh', async (req, res) => {
 
-    const user = null;
-    console.log('headers' , req.headers);
-    const token = req.headers['X-Access-Jwt-Token'];
-    console.log('token' , token);
-    if (!token)
+    var personId = null;
+
+    const token = req.headers['x_access_jwt_token'];
+
+    if (!token){
         return res.status(401).send({ error: true, message: 'Usuario Não Autenticado.' });
+    }
 
     var publicKey = fs.readFileSync('src/oauth/public.key', 'utf8');
     jwt.verify(token, publicKey, { algorithm: ["RS256"] }, function (err, decoded) {
-        getUserRefresh(decoded.id);
-    });
 
-    if (!user) {
+        if(!err){       
+           personId = decoded._id;
+        }
+                    
+    });
+        
+    if (!personId) {
         res.json({ error: true, message: 'Usuario Não Autenticado.' });
     } else {
-        res.json({ error: false, data: { user: user, token: sign(user._id) } });
+        res.json({ error: false, user: await getUserRefresh(personId), token: await sign(personId) });
     }
 })
 
