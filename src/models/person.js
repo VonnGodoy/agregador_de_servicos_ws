@@ -8,10 +8,6 @@ const person = new Schema({
     type: String,
     required: true,
   },
-  socialReason: {
-    type: String,
-    required: false,
-  },
   document: {
     type: String,
     required: true,
@@ -25,10 +21,6 @@ const person = new Schema({
   recipientId: {
     type: String,
     required: false,
-  },
-  geoLocation: {
-    type: [String],
-    coordinates: [String],
   },
   dateRegister: {
     type: Date,
@@ -57,10 +49,6 @@ const person = new Schema({
   },
   contacts: {
     type: [{ type: mongoose.Types.ObjectId, ref: 'Contact' }],
-    required: false,
-  },
-  collaborators: {
-    type: [{ type: mongoose.Types.ObjectId, ref: 'ProviderCollaborator' }],
     required: false,
   },
 }, {collection: 'persons'});

@@ -44,11 +44,37 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.post('/filter', async (req, res) => {
+  try {
+
+    const filter = req.body;
+
+    const schedule = await Schedule.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: filter.coordinates,
+          },
+          distanceField: 'geoLocation',
+          spherical: true,
+          maxDistance: filter.maxDistance * 1000,
+        },
+      },
+    ])
+    .select('_id name socialReason geoLocation dateRegister state');;
+
+    res.json({ error: false, data: schedule });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
 router.get('/:id', async (req, res) => {
   try {
-    const providerId  = req.params.id;
+    const id  = req.params.id;
 
-    const schedule = await Schedule.findById( providerId );
+    const schedule = await Schedule.findById( id );
 
     res.json({ error: false, data: schedule });
   } catch (err) {

@@ -48,7 +48,7 @@ router.get('/', async (req, res) => {
   try {
 
     const persons = await Person.find()
-    .select('_id name socialReason geoLocation dateRegister birthDate sex state');
+    .select('_id name dateRegister birthDate sex state');
     
     res.json({
       error: false,
@@ -63,7 +63,7 @@ router.get('/:id', async (req, res) => {
   try {
 
     const person = await Person.findById(req.params.id)
-    .select('_id name socialReason geoLocation dateRegister birthDate sex state');
+    .select('_id name dateRegister birthDate sex state');
     
     res.json({
       error: false,
@@ -77,7 +77,7 @@ router.get('/:id', async (req, res) => {
 router.get('/document/:document', async (req, res) => {
   try {
     const person = await Person.findOne({ document: req.params.document })
-    .select('_id name socialReason geoLocation dateRegister birthDate sex state');
+    .select('_id name dateRegister birthDate sex state');
 
     res.json({
       error: false,
