@@ -24,6 +24,8 @@ router.post('/', async (req, res) => {
     if (!existent) {
       const _id = mongoose.Types.ObjectId();
 
+      console.log('schedule : ',schedule);
+      
       newService = await new Schedule({
         _id,
         ...schedule,
