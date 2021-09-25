@@ -14,6 +14,7 @@ router.post('/', async (req, res) => {
   session.startTransaction();
 
   try {
+    console.log('request : ',req);
     const personId = req.personId;
     const schedule  = req.body;
 
