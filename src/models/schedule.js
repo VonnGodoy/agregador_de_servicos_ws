@@ -37,7 +37,7 @@ const schedule = new Schema({
   },
   propertySchedule: {
     type: String,
-    enum: ['Empresa', 'Colaborador'],
+    enum: ['E', 'C'],
     required: false,
   },
   state: {
