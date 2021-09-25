@@ -49,7 +49,7 @@ router.post('/filter', async (req, res) => {
 
     const filter = req.body;
 
-    const schedule = await Schedule.aggregate(
+    const schedule = await Schedule.aggregate([
       {
         $geoNear: {
           near: {
@@ -60,7 +60,7 @@ router.post('/filter', async (req, res) => {
           spherical: true,
           maxDistance: filter.maxDistance * 1000,
         },
-      },
+      }],
     )
     .select('_id name socialReason geoLocation dateRegister state');;
 
