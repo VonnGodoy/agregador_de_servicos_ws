@@ -1,4 +1,6 @@
 const express = require('express');
+const mongoose = require('mongoose');
+
 const router = express.Router();
 
 const auth = require('../oauth/midware');
@@ -12,6 +14,7 @@ router.post('/', async (req, res) => {
   session.startTransaction();
 
   try {
+    console.log('request : ',req);
     const personId = req.personId;
     const schedule  = req.body;
 
