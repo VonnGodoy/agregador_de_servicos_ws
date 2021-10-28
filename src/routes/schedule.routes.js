@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
     if (!existent) {
       const _id = mongoose.Types.ObjectId();
 
-      newService = await new Schedule({
+      newSchedule = await new Schedule({
         _id,
         ...schedule,
       }).save({ session });
@@ -49,20 +49,25 @@ router.post('/filter', async (req, res) => {
 
     const filter = req.body;
 
-    const schedule = await Schedule.aggregate([
-      {
-        $geoNear: {
-          near: {
-            type: 'Point',
-            coordinates: filter.coordinates,
-          },
-          distanceField: 'geoLocation',
-          spherical: true,
-          maxDistance: filter.maxDistance * 1000,
-        },
+    const schedule = await Schedule.find({
+      geoLocation: {
+          $near: {
+              $geometry: {
+                  type: "Point",
+                  coordinates: filter.coordinates
+              },
+              $distanceField: 'geoLocation',
+              $spherical: true,
+              $maxDistance: filter.maxDistance * 1000,
+          }
       },
-    ])
-    .select('_id name socialReason geoLocation dateRegister state');;
+      category: {_id: filter.category },
+  })
+  .populate({ path:'categoryId' ,select:'_id name' })
+  .select('_id name socialReason geoLocation category state')
+  .limit( filter.paginate.limit )
+  .skip( filter.paginate.limit * filter.paginate.page )
+  .sort({ name: filter.paginate.order });
 
     res.json({ error: false, data: schedule });
   } catch (err) {

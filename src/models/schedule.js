@@ -7,6 +7,11 @@ const schedule = new Schema({
     ref: 'Person',
     required: true,
   },
+  categoryId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Category',
+    required: true,
+  },
   name: {
     type: String,
     required: true,
@@ -20,8 +25,8 @@ const schedule = new Schema({
     required: true,
   },
   geoLocation: {
-    type: [String],
-    coordinates: [String],
+    type: { type: String },
+    coordinates: [],
   },
   daysWeek: {
     type: [Number],
@@ -37,7 +42,7 @@ const schedule = new Schema({
   },
   propertySchedule: {
     type: String,
-    enum: ['Empresa', 'Colaborador'],
+    enum: ['E', 'C'],
     required: false,
   },
   state: {

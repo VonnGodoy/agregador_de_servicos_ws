@@ -20,7 +20,7 @@ router.post('/signup', async (req, res) => {
 
         if (!existent) {
            let newPerson = createUser(person);
-           res.json({ error: false, user: newPerson, token: sign(newPerson._id) });
+           res.json({ error: false, data: { user: newPerson, token: sign(newPerson._id) } });
         } else {
             res.json({ error: true, message: 'Usuario já cadastrado!' }); 
         }
@@ -37,7 +37,7 @@ router.post('/login', async (req, res) => {
     if (!user) {
         res.json({ error: false, message: 'Usuário ou Senha Incorreto' });
     } else {
-        res.json({ error: false, user: user, token: sign(user._id) });
+        res.json({ error: false, data: { user: user, token: sign(user._id) } });
     }
 })
 
