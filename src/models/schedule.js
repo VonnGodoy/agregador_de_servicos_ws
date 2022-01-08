@@ -68,4 +68,6 @@ const schedule = new Schema({
   }
 }, {collection: 'schedules'});
 
+schedule.index({ geoLocation: '2dsphere' });
+
 module.exports = mongoose.model('Schedule', schedule);

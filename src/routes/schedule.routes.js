@@ -52,7 +52,7 @@ router.post('/filter', async (req, res) => {
 
     const filter = req.body;
 
-    const schedule = await Schedule.find({
+    /*const schedule = await Schedule.find({
       geoLocation: {
           $near: {
               $geometry: {
@@ -60,6 +60,7 @@ router.post('/filter', async (req, res) => {
                   coordinates: filter.coordinates
               },
               $distanceField: 'geoLocation',
+
               $spherical: true,
               $maxDistance: filter.maxDistance * 1000,
           }
@@ -70,9 +71,28 @@ router.post('/filter', async (req, res) => {
   .select('_id name socialReason geoLocation category state')
   .limit( filter.paginate.limit )
   .skip( filter.paginate.limit * filter.paginate.page )
+  .sort({ name: filter.paginate.order });*/
+
+  const schedules = await Schedule.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: filter.coordinates,
+        },
+        distanceField: 'geoLocation',
+        spherical: true,
+        maxDistance: filter.maxDistance * 1000, 
+      },
+    },
+  ])
+  .populate({ path:'categoryId' ,select:'_id name' })
+  .select('_id name socialReason geoLocation category state')
+  .limit( filter.paginate.limit )
+  .skip( filter.paginate.limit * filter.paginate.page )
   .sort({ name: filter.paginate.order });
 
-    res.json({ error: false, data: schedule });
+    res.json({ error: false, data: schedules });
   } catch (err) {
     res.json({ error: true, message: err.message });
   }
